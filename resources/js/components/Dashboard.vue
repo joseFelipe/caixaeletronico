@@ -1,15 +1,28 @@
 <template>
   <div class="container">
     <div class="row mt-5">
+      <div class="col-lg-4 col-6">
+        <div class="small-box bg-info">
+          <div class="inner">
+            <h3>{{ balance }}</h3>
+            <p>Saldo</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-comment-dollar"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Transactions</h3>
+            <h3 class="card-title">Transações</h3>
 
             <div class="card-tools">
-              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNew">
-                New Transaction
-                <i class="fas fa-user-plus fa-fw"></i>
+              <button class="btn btn-primary" @click="newModal">
+                Nova transação
+                <i class="fas fa-plus-circle"></i>
               </button>
             </div>
           </div>
@@ -19,24 +32,28 @@
               <tbody>
                 <tr>
                   <th>ID</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Type</th>
-                  <th>Actions</th>
+                  <th>Valor</th>
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <!-- <th>Ações</th> -->
                 </tr>
-
-                <tr v-for="user in users" :key="user.id">
-                  <td>{{ user.id }}</td>
-                  <td>{{ user.name }}</td>
-                  <td>{{ user.email }}</td>
-                  <td>{{ user.type }}</td>
-                  <td>
-                    <!-- <a href="#">
-                      Edit
-                    </a>-->
-                    <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                  </td>
+                <tr v-for="transaction in transactions" :key="transaction.id">
+                  <td>{{ transaction.id }}</td>
+                  <td>{{ transaction.value }}</td>
+                  <td>{{ transaction.created_at | myDate }}</td>
+                  <td>{{ transaction.type === 0 ? 'Saque' : 'Depósito' }}</td>
+                  <!-- <td>
+                    <a
+                      href="#"
+                      class="btn btn-primary btn-sm"
+                      @click="editModal(transaction)"
+                    >Editar</a>
+                    <a
+                      href="#"
+                      class="btn btn-danger btn-sm"
+                      @click="deleteUser(transaction.id)"
+                    >Excluir</a>
+                  </td>-->
                 </tr>
               </tbody>
             </table>
@@ -59,46 +76,26 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="addNew">Add New</h5>
+            <h5 v-show="editMode" class="modal-title" id="addNew">Atualizar transação</h5>
+            <h5 v-show="!editMode" class="modal-title" id="addNew">Nova transação</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form @submit.prevent="createUser">
+          <form @submit.prevent="editMode ? updateTransaction() : createTransaction()">
             <div class="modal-body">
               <div class="form-group">
                 <input
-                  v-model="form.name"
+                  v-model="form.value"
+                  minlength="1"
+                  maxlength="999"
                   type="text"
-                  name="name"
-                  placeholder="Name"
+                  value="value"
+                  placeholder="Valor"
                   class="form-control"
-                  :class="{ 'is-invalid': form.errors.has('name') }"
+                  :class="{ 'is-invalid': form.errors.has('value') }"
                 >
-                <has-error :form="form" field="name"></has-error>
-              </div>
-
-              <div class="form-group">
-                <input
-                  v-model="form.email"
-                  type="email"
-                  name="email"
-                  placeholder="Email Address"
-                  class="form-control"
-                  :class="{ 'is-invalid': form.errors.has('email') }"
-                >
-                <has-error :form="form" field="email"></has-error>
-              </div>
-
-              <div class="form-group">
-                <textarea
-                  v-model="form.bio"
-                  name="bio"
-                  id="id"
-                  placeholder="Short bio for user (Optional)"
-                  class="form-control"
-                  :class="{ 'is-invalid': form.errors.has('bio') }"
-                ></textarea>
+                <has-error :form="form" field="value"></has-error>
               </div>
 
               <div class="form-group">
@@ -109,29 +106,16 @@
                   id="type"
                   :class="{ 'is-invalid': form.errors.has('type') }"
                 >
-                  <option value>Select User Role</option>
-                  <option value="admin">Admin</option>
-                  <option value="user">Standar User</option>
-                  <option value="author">Author</option>
+                  <option value="0">Saque</option>
+                  <option value="1">Depósito</option>
                 </select>
                 <has-error :form="form" field="type"></has-error>
               </div>
-
-              <div class="form-group">
-                <input
-                  v-model="form.password"
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  class="form-control"
-                  :class="{ 'is-invalid': form.errors.has('password') }"
-                >
-                <has-error :form="form" field="password"></has-error>
-              </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
+              <button v-show="editMode" type="submit" class="btn btn-primary">Atualizar</button>
+              <button v-show="!editMode" type="submit" class="btn btn-primary">Salvar</button>
             </div>
           </form>
         </div>
@@ -144,22 +128,111 @@
 export default {
   data() {
     return {
+      editMode: true,
+      transactions: {},
       form: new Form({
-        name: "",
-        email: "",
-        password: "",
-        type: "",
-        bio: ""
+        id: "",
+        value: "",
+        type: ""
       })
     };
   },
   methods: {
-    createUser() {
-      this.form.post("api/user");
+    newModal() {
+      this.editMode = false;
+      this.form.reset();
+      $("#addNew").modal("show");
+    },
+    editModal(transaction) {
+      this.editMode = true;
+      this.form.fill(transaction);
+      $("#addNew").modal("show");
+    },
+    loadTransactions() {
+      axios
+        .get("api/transaction")
+        .then(
+          ({ data }) => (
+            (this.transactions = data.transaction.data),
+            (this.balance = data.balance.balance)
+          )
+        );
+    },
+    createTransaction() {
+      this.$Progress.start();
+      this.form
+        .post("api/transaction")
+        .then(() => {
+          Fire.$emit("TriggerLoad");
+
+          $("#addNew").modal("hide");
+
+          toast.fire({
+            type: "success",
+            title: "Transação efetuada com sucesso"
+          });
+
+          this.$Progress.finish();
+        })
+        .catch(() => {});
+    },
+    updateTransaction() {
+      this.form
+        .put("api/transaction/" + this.form.id)
+        .then(() => {
+          Fire.$emit("TriggerLoad");
+
+          $("#addNew").modal("hide");
+
+          toast.fire({
+            type: "success",
+            title: "Transação atualizada com sucesso"
+          });
+
+          this.$Progress.finish();
+        })
+        .catch(() => {
+          this.$Progress.fail();
+        });
+    },
+    deleteUser(id) {
+      swal
+        .fire({
+          title: "Tem certeza?",
+          text: "Não será possível desfazer esta exclusão!",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Sim, excluir!"
+        })
+        .then(result => {
+          this.form
+            .delete("api/transaction/" + id)
+            .then(() => {
+              if (result.value) {
+                toast.fire({
+                  type: "success",
+                  title: "Transação excluída com sucesso"
+                });
+                Fire.$emit("TriggerLoad");
+              }
+            })
+            .catch(() => {
+              swal.fire({
+                title: "Ops!",
+                text: "Ocorreu algum problema.",
+                type: "error"
+              });
+            });
+        });
     }
   },
-  mounted() {
-    console.log("Component mounted.");
+  created() {
+    this.loadTransactions();
+    Fire.$on("TriggerLoad", () => {
+      this.loadTransactions();
+    });
   }
 };
 </script>
