@@ -29,12 +29,14 @@ class UserController extends Controller
     {   
         $this->validate($request, [
             'name' => 'required|string|max:255',
+            'cpf' => 'required|string|min:14|max:14|unique:users,cpf',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|max:5|min:5',
         ]);
 
         return User::create([
             'name' => $request['name'],
+            'cpf' => $request['cpf'],
             'email' => $request['email'],
             'type' => $request['type'],
             'password' => Hash::make($request['password'])
@@ -62,10 +64,12 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {   
         $user = User::find($id);
-        return ["message" => "update-user"];
+
+        return ["message" => "update-user", "user" => $id];
         
         $this->validate($request, [
             'name' => 'required|string|max:255',
+            'cpf' => 'required|string|max:255|unique:users,cpf,'.$user->id,
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'password' => 'required|string|max:5|min:5',
         ]);

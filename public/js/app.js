@@ -1906,6 +1906,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1934,13 +1956,22 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get("api/transaction").then(function (_ref) {
         var data = _ref.data;
-        return _this.transactions = data.transaction.data, _this.balance = data.balance.balance;
+        return _this.transactions = data.transaction.data, _this.balance = data.balance.balance, _this.withdrawal = data.withdrawal.withdrawal, _this.deposit = data.deposit.deposit;
       });
     },
     createTransaction: function createTransaction() {
       var _this2 = this;
 
       this.$Progress.start();
+
+      if (this.form.value > this.balance && this.form.type == 0) {
+        toast.fire({
+          type: "error",
+          title: "Saldo insuficiente"
+        });
+        return false;
+      }
+
       this.form.post("api/transaction").then(function () {
         Fire.$emit("TriggerLoad");
         $("#addNew").modal("hide");
@@ -59143,7 +59174,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row mt-5" }, [
-      _c("div", { staticClass: "col-lg-4 col-6" }, [
+      _c("div", { staticClass: "col-lg-6 col-6" }, [
         _c("div", { staticClass: "small-box bg-info" }, [
           _c("div", { staticClass: "inner" }, [
             _c("h3", [_vm._v(_vm._s(_vm.balance))]),
@@ -59152,6 +59183,30 @@ var render = function() {
           ]),
           _vm._v(" "),
           _vm._m(0)
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-lg-3 col-6" }, [
+        _c("div", { staticClass: "small-box bg-danger" }, [
+          _c("div", { staticClass: "inner" }, [
+            _c("h3", [_vm._v(_vm._s(_vm.withdrawal))]),
+            _vm._v(" "),
+            _c("p", [_vm._v("Saques")])
+          ]),
+          _vm._v(" "),
+          _vm._m(1)
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-lg-3 col-6" }, [
+        _c("div", { staticClass: "small-box bg-success" }, [
+          _c("div", { staticClass: "inner" }, [
+            _c("h3", [_vm._v(_vm._s(_vm.deposit))]),
+            _vm._v(" "),
+            _c("p", [_vm._v("Depósitos")])
+          ]),
+          _vm._v(" "),
+          _vm._m(2)
         ])
       ])
     ]),
@@ -59179,7 +59234,7 @@ var render = function() {
               _c(
                 "tbody",
                 [
-                  _vm._m(1),
+                  _vm._m(3),
                   _vm._v(" "),
                   _vm._l(_vm.transactions, function(transaction) {
                     return _c("tr", { key: transaction.id }, [
@@ -59263,7 +59318,7 @@ var render = function() {
                   [_vm._v("Nova transação")]
                 ),
                 _vm._v(" "),
-                _vm._m(2)
+                _vm._m(4)
               ]),
               _vm._v(" "),
               _c(
@@ -59445,6 +59500,22 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-arrow-alt-circle-down" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "icon" }, [
+      _c("i", { staticClass: "fas fa-arrow-alt-circle-up" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("tr", [
       _c("th", [_vm._v("ID")]),
       _vm._v(" "),
@@ -59558,7 +59629,7 @@ var render = function() {
                     return _c("tr", { key: user.id }, [
                       _c("td", [_vm._v(_vm._s(user.name))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(user.email))]),
+                      _c("td", [_vm._v(_vm._s(user.cpf))]),
                       _vm._v(" "),
                       _c("td", [
                         _vm._v(_vm._s(_vm._f("myDate")(user.created_at)))
@@ -59826,7 +59897,7 @@ var staticRenderFns = [
     return _c("tr", [
       _c("th", [_vm._v("Nome")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Email")]),
+      _c("th", [_vm._v("CPF")]),
       _vm._v(" "),
       _c("th", [_vm._v("Data Registro")]),
       _vm._v(" "),
@@ -59934,7 +60005,7 @@ var render = function() {
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(user.name))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(user.email))]),
+                      _c("td", [_vm._v(_vm._s(user.cpf))]),
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(_vm._f("upText")(user.type)))]),
                       _vm._v(" "),
@@ -60299,7 +60370,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Name")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Email")]),
+      _c("th", [_vm._v("CPF")]),
       _vm._v(" "),
       _c("th", [_vm._v("Type")]),
       _vm._v(" "),

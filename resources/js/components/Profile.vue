@@ -12,13 +12,13 @@
               <tbody>
                 <tr>
                   <th>Nome</th>
-                  <th>Email</th>
+                  <th>CPF</th>
                   <th>Data Registro</th>
                   <th>Ações</th>
                 </tr>
                 <tr v-for="user in users" :key="user.id">
                   <td>{{ user.name }}</td>
-                  <td>{{ user.email }}</td>
+                  <td>{{ user.cpf }}</td>
                   <td>{{ user.created_at | myDate }}</td>
                   <td>
                     <a

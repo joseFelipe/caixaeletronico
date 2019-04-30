@@ -20,7 +20,7 @@
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
-                  <th>Email</th>
+                  <th>CPF</th>
                   <th>Type</th>
                   <th>Registered At</th>
                   <th>Actions</th>
@@ -28,7 +28,7 @@
                 <tr v-for="user in users" :key="user.id">
                   <td>{{ user.id }}</td>
                   <td>{{ user.name }}</td>
-                  <td>{{ user.email }}</td>
+                  <td>{{ user.cpf }}</td>
                   <td>{{ user.type | upText }}</td>
                   <td>{{ user.created_at | myDate }}</td>
                   <td>

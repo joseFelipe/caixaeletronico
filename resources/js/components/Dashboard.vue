@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row mt-5">
-      <div class="col-lg-4 col-6">
+      <div class="col-lg-6 col-6">
         <div class="small-box bg-info">
           <div class="inner">
             <h3>{{ balance }}</h3>
@@ -9,6 +9,28 @@
           </div>
           <div class="icon">
             <i class="fas fa-comment-dollar"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+          <div class="inner">
+            <h3>{{ withdrawal }}</h3>
+            <p>Saques</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-arrow-alt-circle-down"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+          <div class="inner">
+            <h3>{{ deposit }}</h3>
+            <p>Depósitos</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-arrow-alt-circle-up"></i>
           </div>
         </div>
       </div>
@@ -154,12 +176,23 @@ export default {
         .then(
           ({ data }) => (
             (this.transactions = data.transaction.data),
-            (this.balance = data.balance.balance)
+            (this.balance = data.balance.balance),
+            (this.withdrawal = data.withdrawal.withdrawal),
+            (this.deposit = data.deposit.deposit)
           )
         );
     },
     createTransaction() {
       this.$Progress.start();
+
+      if (this.form.value > this.balance && this.form.type == 0) {
+        toast.fire({
+          type: "error",
+          title: "Saldo insuficiente"
+        });
+        return false;
+      }
+
       this.form
         .post("api/transaction")
         .then(() => {

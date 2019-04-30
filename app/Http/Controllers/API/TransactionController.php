@@ -26,14 +26,31 @@ class TransactionController extends Controller
         // $balance = DB::table('transactions')->sum('(CASE WHEN transactions.type = 0 THEN transactions.value END)');
         //(CASE WHEN transactions.type = 0 THEN transactions.value * -1 ELSE transactions.value END)
 
-        $balance = Transaction::select(DB::raw('SUM(CASE WHEN TRANSACTIONS.TYPE = 0 THEN TRANSACTIONS.VALUE * -1 ELSE TRANSACTIONS.VALUE END) AS balance'))->first();
+        $balance = Transaction::select(
+                                DB::raw('SUM(CASE WHEN TRANSACTIONS.TYPE = 0 THEN TRANSACTIONS.VALUE 
+                                * -1 ELSE TRANSACTIONS.VALUE END) AS balance')
+                                )->first();
 
+        $withdrawal = Transaction::select(
+                                DB::raw('SUM(CASE WHEN TRANSACTIONS.TYPE = 0 THEN 
+                                            TRANSACTIONS.VALUE END) AS withdrawal'))->first();
+        
+        $deposit = Transaction::select(
+                                DB::raw('SUM(CASE WHEN TRANSACTIONS.TYPE = 1 THEN 
+                                            TRANSACTIONS.VALUE END) AS deposit'))->first();
+
+        
 
         $transaction = Transaction::latest()->paginate(10);
 
         // return response()->json($balance, $transaction);
 
-        return ["transaction" => $transaction, "balance" => $balance];
+        return [
+            "transaction" => $transaction,
+            "balance" => $balance,
+            "withdrawal" => $withdrawal,
+            "deposit" => $deposit
+        ];
     }
 
     /**
@@ -43,7 +60,7 @@ class TransactionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $this->validate($request, [
             'type' => 'required|boolean|max:1',
             'value' => 'required|integer|max:999|min:1',
