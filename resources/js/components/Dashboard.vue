@@ -128,7 +128,7 @@
                   id="type"
                   :class="{ 'is-invalid': form.errors.has('type') }"
                 >
-                  <option value="0">Saque</option>
+                  <option value="0" selected>Saque</option>
                   <option value="1">Depósito</option>
                 </select>
                 <has-error :form="form" field="type"></has-error>
@@ -185,10 +185,32 @@ export default {
     createTransaction() {
       this.$Progress.start();
 
-      if (this.form.value > this.balance && this.form.type == 0) {
+      var balance, formValue;
+
+      balance = parseInt(this.balance);
+      formValue = parseInt(this.form.value);
+
+      if (typeTransaction != "") {
+        console.log("typeTransaction: " + typeTransaction);
+        typeTransaction = parseInt(typeTransaction);
+      } else {
+        console.log("typeTransaction empty");
+      }
+
+      typeTransaction = this.form.type ? parseInt(this.form.type) : "";
+
+      if (formValue > balance && this.form.type == 0) {
         toast.fire({
           type: "error",
           title: "Saldo insuficiente"
+        });
+        return false;
+      }
+
+      if (this.form.type != "0" || this.form.type != "1") {
+        toast.fire({
+          type: "warning",
+          title: "Informe o tipo de transação"
         });
         return false;
       }

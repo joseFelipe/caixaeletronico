@@ -1963,8 +1963,49 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.$Progress.start();
+  
+      var valueForm, balance;
+      
+      console.log('[--]')
+      console.log(this.form.value)
+      console.log('[--]')
 
-      if (this.form.value > this.balance && this.form.type == 0) {
+      if (!this.form.value) {
+        toast.fire({
+          type: "warning",
+          title: "Informe um valor"
+        });
+        return false;
+      } else {
+        valueForm = parseInt(this.form.value);
+        balance = parseInt(this.balance); 
+      }
+      
+      if (valueForm <= 0) {
+        toast.fire({
+          type: "warning",
+          title: "O valor deve ser maior que zero"
+        });
+        return false;
+      }
+      
+      if (valueForm > 999) {
+        toast.fire({
+          type: "warning",
+          title: "O valor deve ser menor que 999"
+        });
+        return false;
+      }
+
+      if (this.form.type !== "0" && this.form.type !== "1") {
+        toast.fire({
+          type: "warning",
+          title: "Informe o tipo de transação"
+        });
+        return false;
+      }
+
+      if ((valueForm > balance) && this.form.type == 0) {
         toast.fire({
           type: "error",
           title: "Saldo insuficiente"

@@ -61,17 +61,32 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {   
-        $user = User::find($id);
+        // $user = User::find($id);
 
-        return ["message" => "update-user", "user" => $id];
+        /*
+        public function update(UpdateCategoryRequest $request, Category $category)
+        {
+            $category->update([
+                'name' => $request->name
+            ]);
+                
+            session()->flash('success', 'Category updated successfully');
+            
+            return redirect(route('categories.index'));
+        }
+        */
         
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'cpf' => 'required|string|max:255|unique:users,cpf,'.$user->id,
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'password' => 'required|string|max:5|min:5',
+        ]);
+
+        $user->update([
+            'password' => $request->password
         ]);
             
         $user->update($request->all());
