@@ -73,6 +73,19 @@ Vue.filter('upText', function (text) {
     return text.charAt(0).toUpperCase() + text.slice(1);
 });
 
+Vue.filter('Type', function (type) {
+    switch (type) {
+        case 0:
+            return 'Saque';
+        case 1:
+            return 'Depósito';
+        case 2:
+            return 'Transferência';
+        default:
+            return 'Erro (case) type';
+    }
+});
+
 Vue.filter('myDate', function (date) {
     return moment(date).format('DD/MM/YYYY');
 });

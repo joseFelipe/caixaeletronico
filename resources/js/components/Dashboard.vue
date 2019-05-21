@@ -1,36 +1,36 @@
 <template>
   <div class="container">
     <div class="row mt-5">
-      <div class="col-lg-6 col-6">
-        <div class="small-box bg-info">
+      <div class="col-lg-4 col-6">
+        <div class="small-box bg-info-gradient">
           <div class="inner">
-            <h3>{{ balance }}</h3>
-            <p>Saldo</p>
+            <h3>{{ current_account != 0 ? current_account : '0' }}</h3>
+            <h5>Conta Corrente</h5>
           </div>
           <div class="icon">
             <i class="fas fa-comment-dollar"></i>
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-6">
-        <div class="small-box bg-danger">
+      <div class="col-lg-4 col-6">
+        <div class="small-box bg-warning-gradient">
           <div class="inner">
-            <h3>{{ withdrawal }}</h3>
-            <p>Saques</p>
+            <h3>{{ saving_account != 0 ? saving_account : '0' }}</h3>
+            <h5>Conta Poupança</h5>
           </div>
           <div class="icon">
-            <i class="fas fa-arrow-alt-circle-down"></i>
+            <i class="fas fas fa-wallet"></i>
           </div>
         </div>
       </div>
-      <div class="col-lg-3 col-6">
-        <div class="small-box bg-success">
+      <div class="col-lg-4 col-6">
+        <div class="small-box bg-success-gradient">
           <div class="inner">
-            <h3>{{ deposit }}</h3>
-            <p>Depósitos</p>
+            <h3>{{ salary_account != 0 ? salary_account : '0' }}</h3>
+            <h5>Conta Salário</h5>
           </div>
           <div class="icon">
-            <i class="fas fa-arrow-alt-circle-up"></i>
+            <i class="fas fa-comments-dollar"></i>
           </div>
         </div>
       </div>
@@ -56,33 +56,24 @@
                   <th>ID</th>
                   <th>Valor</th>
                   <th>Data</th>
-                  <th>Tipo</th>
-                  <!-- <th>Ações</th> -->
+                  <th>Tipo transação</th>
                 </tr>
                 <tr v-for="transaction in transactions" :key="transaction.id">
                   <td>{{ transaction.id }}</td>
                   <td>{{ transaction.value }}</td>
                   <td>{{ transaction.created_at | myDate }}</td>
-                  <td>{{ transaction.type === 0 ? 'Saque' : 'Depósito' }}</td>
-                  <!-- <td>
-                    <a
-                      href="#"
-                      class="btn btn-primary btn-sm"
-                      @click="editModal(transaction)"
-                    >Editar</a>
-                    <a
-                      href="#"
-                      class="btn btn-danger btn-sm"
-                      @click="deleteUser(transaction.id)"
-                    >Excluir</a>
-                  </td>-->
+                  <td>{{ transaction.type | Type }}</td>
+                  <!-- <p>Using mustaches: {{ transaction.type }}</p> -->
+                  <td>
+                    <p>
+                      <small class="badge badge-danger" v-html="Type"></small>
+                    </p>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <!-- /.card-body -->
         </div>
-        <!-- /.card -->
       </div>
     </div>
 
@@ -121,6 +112,7 @@
               </div>
 
               <div class="form-group">
+                <label for="account-destiny">Tipo transação</label>
                 <select
                   name="type"
                   v-model="form.type"
@@ -130,8 +122,34 @@
                 >
                   <option value="0" selected>Saque</option>
                   <option value="1">Depósito</option>
+                  <option value="2">Transferência</option>
                 </select>
                 <has-error :form="form" field="type"></has-error>
+              </div>
+
+              <div class="form-group">
+                <label for="account-origin" v-if="form.type == 2">Conta Origem</label>
+                <label for="account-origin" v-if="form.type != 2">Conta</label>
+                <select
+                  name="account-origin"
+                  id="account-origin"
+                  v-model="form.accountOrigin"
+                  class="form-control"
+                >
+                  <option v-for="account in accounts" v-bind:value="account.id">{{ account.title }}</option>
+                </select>
+              </div>
+
+              <div class="form-group" v-if="form.type == 2">
+                <label for="account-destiny">Conta Destino</label>
+                <select
+                  name="account-destiny"
+                  id="account-destiny"
+                  v-model="form.accountDestiny"
+                  class="form-control"
+                >
+                  <option v-for="account in accounts" v-bind:value="account.id">{{ account.title }}</option>
+                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -155,7 +173,9 @@ export default {
       form: new Form({
         id: "",
         value: "",
-        type: ""
+        type: "",
+        accountOrigin: "",
+        accountDestiny: ""
       })
     };
   },
@@ -176,43 +196,148 @@ export default {
         .then(
           ({ data }) => (
             (this.transactions = data.transaction.data),
-            (this.balance = data.balance.balance),
-            (this.withdrawal = data.withdrawal.withdrawal),
-            (this.deposit = data.deposit.deposit)
+            (this.current_account = data.current_account),
+            (this.saving_account = data.saving_account),
+            (this.salary_account = data.salary_account)
           )
         );
+    },
+    loadAccounts() {
+      axios
+        .get("api/account")
+        .then(({ data }) => (this.accounts = data.accounts.data));
     },
     createTransaction() {
       this.$Progress.start();
 
-      var balance, formValue;
+      var typeTransaction,
+        accountOrigin,
+        accountDestiny,
+        current_account_value,
+        saving_account_value,
+        salary_account_value,
+        value;
 
-      balance = parseInt(this.balance);
-      formValue = parseInt(this.form.value);
-
-      if (typeTransaction != "") {
-        console.log("typeTransaction: " + typeTransaction);
-        typeTransaction = parseInt(typeTransaction);
-      } else {
-        console.log("typeTransaction empty");
-      }
+      value = parseInt(this.form.value);
+      current_account_value = parseInt(this.current_account);
+      saving_account_value = parseInt(this.saving_account);
+      salary_account_value = parseInt(this.salary_account);
 
       typeTransaction = this.form.type ? parseInt(this.form.type) : "";
 
-      if (formValue > balance && this.form.type == 0) {
+      accountOrigin = this.form.accountOrigin
+        ? parseInt(this.form.accountOrigin)
+        : "";
+      accountDestiny = this.form.accountDestiny
+        ? parseInt(this.form.accountDestiny)
+        : "";
+
+      console.log("---");
+      console.log("Account Origin: " + accountOrigin);
+      console.log("---");
+      console.log("Account Destiny: " + accountDestiny);
+      console.log("---");
+      console.log("Type Transaciont: " + typeTransaction);
+      console.log("---");
+
+      if (isNaN(value)) {
         toast.fire({
-          type: "error",
-          title: "Saldo insuficiente"
+          type: "warning",
+          title: "Informe o valor"
         });
         return false;
       }
 
-      if (this.form.type != "0" || this.form.type != "1") {
+      if (value <= 0) {
         toast.fire({
           type: "warning",
-          title: "Informe o tipo de transação"
+          title: "O valor deve ser maior que 0"
         });
         return false;
+      } else if (value > 999) {
+        toast.fire({
+          type: "warning",
+          title: "O valor deve ser menor que 999"
+        });
+        return false;
+      }
+
+      if (typeTransaction === "") {
+        console.log("Type: " + typeTransaction);
+        toast.fire({
+          type: "warning",
+          title: "Selecione o tipo de transação"
+        });
+        return false;
+      }
+
+      if (typeTransaction == 2) {
+        if (accountOrigin === "") {
+          toast.fire({
+            type: "warning",
+            title: "Selecione a conta de origem"
+          });
+          return false;
+        }
+        if (accountDestiny === "") {
+          toast.fire({
+            type: "warning",
+            title: "Selecione a conta de destino"
+          });
+          return false;
+        }
+      }
+
+      if (this.form.accountOrigin === "") {
+        toast.fire({
+          type: "warning",
+          title: "Selecione a conta"
+        });
+        return false;
+      }
+
+      if (typeTransaction != 1) {
+        switch (this.form.accountOrigin) {
+          case 1:
+            if (this.form.value > current_account_value) {
+              toast.fire({
+                type: "warning",
+                title: "Saldo insuficiente na conta corrente"
+              });
+              return false;
+            }
+            break;
+          case 2:
+            if (this.form.value > saving_account_value) {
+              toast.fire({
+                type: "warning",
+                title: "Saldo insuficiente na conta poupança"
+              });
+              return false;
+            }
+            break;
+          case 3:
+            if (this.form.value > salary_account_value) {
+              toast.fire({
+                type: "warning",
+                title: "Saldo insuficiente na conta salário"
+              });
+              return false;
+            }
+            break;
+          default:
+            console.log("erro switch transaction type");
+        }
+      }
+
+      if (this.form.accountDestiny !== "") {
+        if (this.form.accountOrigin == this.form.accountDestiny) {
+          toast.fire({
+            type: "error",
+            title: "A conta de destino não pode ser igual a conta de origem"
+          });
+          return false;
+        }
       }
 
       this.form
@@ -285,6 +410,7 @@ export default {
   },
   created() {
     this.loadTransactions();
+    this.loadAccounts();
     Fire.$on("TriggerLoad", () => {
       this.loadTransactions();
     });

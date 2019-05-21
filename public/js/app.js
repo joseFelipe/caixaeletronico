@@ -1928,6 +1928,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1936,7 +1954,9 @@ __webpack_require__.r(__webpack_exports__);
       form: new Form({
         id: "",
         value: "",
-        type: ""
+        type: "",
+        accountOrigin: "",
+        accountDestiny: ""
       })
     };
   },
@@ -1956,40 +1976,52 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get("api/transaction").then(function (_ref) {
         var data = _ref.data;
-        return _this.transactions = data.transaction.data, _this.balance = data.balance.balance, _this.withdrawal = data.withdrawal.withdrawal, _this.deposit = data.deposit.deposit;
+        return _this.transactions = data.transaction.data, _this.current_account = data.current_account, _this.saving_account = data.saving_account, _this.salary_account = data.salary_account;
+      });
+    },
+    loadAccounts: function loadAccounts() {
+      var _this2 = this;
+
+      axios.get("api/account").then(function (_ref2) {
+        var data = _ref2.data;
+        return _this2.accounts = data.accounts.data;
       });
     },
     createTransaction: function createTransaction() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.$Progress.start();
-  
-      var valueForm, balance;
-      
-      console.log('[--]')
-      console.log(this.form.value)
-      console.log('[--]')
+      var typeTransaction, accountOrigin, accountDestiny, current_account_value, saving_account_value, salary_account_value, value;
+      value = parseInt(this.form.value);
+      current_account_value = parseInt(this.current_account);
+      saving_account_value = parseInt(this.saving_account);
+      salary_account_value = parseInt(this.salary_account);
+      typeTransaction = this.form.type ? parseInt(this.form.type) : "";
+      accountOrigin = this.form.accountOrigin ? parseInt(this.form.accountOrigin) : "";
+      accountDestiny = this.form.accountDestiny ? parseInt(this.form.accountDestiny) : "";
+      console.log("---");
+      console.log("Account Origin: " + accountOrigin);
+      console.log("---");
+      console.log("Account Destiny: " + accountDestiny);
+      console.log("---");
+      console.log("Type Transaciont: " + typeTransaction);
+      console.log("---");
 
-      if (!this.form.value) {
+      if (isNaN(value)) {
         toast.fire({
           type: "warning",
-          title: "Informe um valor"
-        });
-        return false;
-      } else {
-        valueForm = parseInt(this.form.value);
-        balance = parseInt(this.balance); 
-      }
-      
-      if (valueForm <= 0) {
-        toast.fire({
-          type: "warning",
-          title: "O valor deve ser maior que zero"
+          title: "Informe o valor"
         });
         return false;
       }
-      
-      if (valueForm > 999) {
+
+      if (value <= 0) {
+        toast.fire({
+          type: "warning",
+          title: "O valor deve ser maior que 0"
+        });
+        return false;
+      } else if (value > 999) {
         toast.fire({
           type: "warning",
           title: "O valor deve ser menor que 999"
@@ -1997,20 +2029,89 @@ __webpack_require__.r(__webpack_exports__);
         return false;
       }
 
-      if (this.form.type !== "0" && this.form.type !== "1") {
+      if (typeTransaction === "") {
+        console.log("Type: " + typeTransaction);
         toast.fire({
           type: "warning",
-          title: "Informe o tipo de transação"
+          title: "Selecione o tipo de transação"
         });
         return false;
       }
 
-      if ((valueForm > balance) && this.form.type == 0) {
+      if (typeTransaction == 2) {
+        if (accountOrigin === "") {
+          toast.fire({
+            type: "warning",
+            title: "Selecione a conta de origem"
+          });
+          return false;
+        }
+
+        if (accountDestiny === "") {
+          toast.fire({
+            type: "warning",
+            title: "Selecione a conta de destino"
+          });
+          return false;
+        }
+      }
+
+      if (this.form.accountOrigin === "") {
         toast.fire({
-          type: "error",
-          title: "Saldo insuficiente"
+          type: "warning",
+          title: "Selecione a conta"
         });
         return false;
+      }
+
+      if (typeTransaction != 1) {
+        switch (this.form.accountOrigin) {
+          case 1:
+            if (this.form.value > current_account_value) {
+              toast.fire({
+                type: "warning",
+                title: "Saldo insuficiente na conta corrente"
+              });
+              return false;
+            }
+
+            break;
+
+          case 2:
+            if (this.form.value > saving_account_value) {
+              toast.fire({
+                type: "warning",
+                title: "Saldo insuficiente na conta poupança"
+              });
+              return false;
+            }
+
+            break;
+
+          case 3:
+            if (this.form.value > salary_account_value) {
+              toast.fire({
+                type: "warning",
+                title: "Saldo insuficiente na conta salário"
+              });
+              return false;
+            }
+
+            break;
+
+          default:
+            console.log("erro switch transaction type");
+        }
+      }
+
+      if (this.form.accountDestiny !== "") {
+        if (this.form.accountOrigin == this.form.accountDestiny) {
+          toast.fire({
+            type: "error",
+            title: "A conta de destino não pode ser igual a conta de origem"
+          });
+          return false;
+        }
       }
 
       this.form.post("api/transaction").then(function () {
@@ -2021,11 +2122,11 @@ __webpack_require__.r(__webpack_exports__);
           title: "Transação efetuada com sucesso"
         });
 
-        _this2.$Progress.finish();
+        _this3.$Progress.finish();
       })["catch"](function () {});
     },
     updateTransaction: function updateTransaction() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.form.put("api/transaction/" + this.form.id).then(function () {
         Fire.$emit("TriggerLoad");
@@ -2035,13 +2136,13 @@ __webpack_require__.r(__webpack_exports__);
           title: "Transação atualizada com sucesso"
         });
 
-        _this3.$Progress.finish();
+        _this4.$Progress.finish();
       })["catch"](function () {
-        _this3.$Progress.fail();
+        _this4.$Progress.fail();
       });
     },
     deleteUser: function deleteUser(id) {
-      var _this4 = this;
+      var _this5 = this;
 
       swal.fire({
         title: "Tem certeza?",
@@ -2052,7 +2153,7 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonColor: "#d33",
         confirmButtonText: "Sim, excluir!"
       }).then(function (result) {
-        _this4.form["delete"]("api/transaction/" + id).then(function () {
+        _this5.form["delete"]("api/transaction/" + id).then(function () {
           if (result.value) {
             toast.fire({
               type: "success",
@@ -2071,11 +2172,12 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    var _this5 = this;
+    var _this6 = this;
 
     this.loadTransactions();
+    this.loadAccounts();
     Fire.$on("TriggerLoad", function () {
-      _this5.loadTransactions();
+      _this6.loadTransactions();
     });
   }
 });
@@ -2241,9 +2343,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2269,6 +2368,7 @@ __webpack_require__.r(__webpack_exports__);
     editModal: function editModal(user) {
       this.editMode = true;
       this.form.fill(user);
+      console.log("user: " + user);
       $("#addNew").modal("show");
     },
     loadUsers: function loadUsers() {
@@ -2282,6 +2382,12 @@ __webpack_require__.r(__webpack_exports__);
     updatePassword: function updatePassword() {
       var _this2 = this;
 
+      console.log("- - -");
+      console.log("CurrentPassword1: " + this.form.currentPassword);
+      console.log("NewPassword1: " + this.form.newPassword1);
+      console.log("NewPassword2: " + this.form.newPassword2);
+      console.log("- - -");
+      return false;
       this.form.put("api/user/" + this.form.id).then(function () {
         Fire.$emit("TriggerLoad");
         $("#addNew").modal("hide");
@@ -59215,36 +59321,44 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row mt-5" }, [
-      _c("div", { staticClass: "col-lg-6 col-6" }, [
-        _c("div", { staticClass: "small-box bg-info" }, [
+      _c("div", { staticClass: "col-lg-4 col-6" }, [
+        _c("div", { staticClass: "small-box bg-info-gradient" }, [
           _c("div", { staticClass: "inner" }, [
-            _c("h3", [_vm._v(_vm._s(_vm.balance))]),
+            _c("h3", [
+              _vm._v(
+                _vm._s(_vm.current_account != 0 ? _vm.current_account : "0")
+              )
+            ]),
             _vm._v(" "),
-            _c("p", [_vm._v("Saldo")])
+            _c("h5", [_vm._v("Conta Corrente")])
           ]),
           _vm._v(" "),
           _vm._m(0)
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-lg-3 col-6" }, [
-        _c("div", { staticClass: "small-box bg-danger" }, [
+      _c("div", { staticClass: "col-lg-4 col-6" }, [
+        _c("div", { staticClass: "small-box bg-warning-gradient" }, [
           _c("div", { staticClass: "inner" }, [
-            _c("h3", [_vm._v(_vm._s(_vm.withdrawal))]),
+            _c("h3", [
+              _vm._v(_vm._s(_vm.saving_account != 0 ? _vm.saving_account : "0"))
+            ]),
             _vm._v(" "),
-            _c("p", [_vm._v("Saques")])
+            _c("h5", [_vm._v("Conta Poupança")])
           ]),
           _vm._v(" "),
           _vm._m(1)
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-lg-3 col-6" }, [
-        _c("div", { staticClass: "small-box bg-success" }, [
+      _c("div", { staticClass: "col-lg-4 col-6" }, [
+        _c("div", { staticClass: "small-box bg-success-gradient" }, [
           _c("div", { staticClass: "inner" }, [
-            _c("h3", [_vm._v(_vm._s(_vm.deposit))]),
+            _c("h3", [
+              _vm._v(_vm._s(_vm.salary_account != 0 ? _vm.salary_account : "0"))
+            ]),
             _vm._v(" "),
-            _c("p", [_vm._v("Depósitos")])
+            _c("h5", [_vm._v("Conta Salário")])
           ]),
           _vm._v(" "),
           _vm._m(2)
@@ -59288,9 +59402,16 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("td", [
-                        _vm._v(
-                          _vm._s(transaction.type === 0 ? "Saque" : "Depósito")
-                        )
+                        _vm._v(_vm._s(_vm._f("Type")(transaction.type)))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("p", [
+                          _c("small", {
+                            staticClass: "badge badge-danger",
+                            domProps: { innerHTML: _vm._s(_vm.Type) }
+                          })
+                        ])
                       ])
                     ])
                   })
@@ -59420,6 +59541,10 @@ var render = function() {
                       "div",
                       { staticClass: "form-group" },
                       [
+                        _c("label", { attrs: { for: "account-destiny" } }, [
+                          _vm._v("Tipo transação")
+                        ]),
+                        _vm._v(" "),
                         _c(
                           "select",
                           {
@@ -59457,12 +59582,18 @@ var render = function() {
                             }
                           },
                           [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Saque")
-                            ]),
+                            _c(
+                              "option",
+                              { attrs: { value: "0", selected: "" } },
+                              [_vm._v("Saque")]
+                            ),
                             _vm._v(" "),
                             _c("option", { attrs: { value: "1" } }, [
                               _vm._v("Depósito")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "2" } }, [
+                              _vm._v("Transferência")
                             ])
                           ]
                         ),
@@ -59472,7 +59603,122 @@ var render = function() {
                         })
                       ],
                       1
-                    )
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _vm.form.type == 2
+                        ? _c("label", { attrs: { for: "account-origin" } }, [
+                            _vm._v("Conta Origem")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.form.type != 2
+                        ? _c("label", { attrs: { for: "account-origin" } }, [
+                            _vm._v("Conta")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.form.accountOrigin,
+                              expression: "form.accountOrigin"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            name: "account-origin",
+                            id: "account-origin"
+                          },
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.$set(
+                                _vm.form,
+                                "accountOrigin",
+                                $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              )
+                            }
+                          }
+                        },
+                        _vm._l(_vm.accounts, function(account) {
+                          return _c(
+                            "option",
+                            { domProps: { value: account.id } },
+                            [_vm._v(_vm._s(account.title))]
+                          )
+                        }),
+                        0
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _vm.form.type == 2
+                      ? _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "account-destiny" } }, [
+                            _vm._v("Conta Destino")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.form.accountDestiny,
+                                  expression: "form.accountDestiny"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                name: "account-destiny",
+                                id: "account-destiny"
+                              },
+                              on: {
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.$set(
+                                    _vm.form,
+                                    "accountDestiny",
+                                    $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  )
+                                }
+                              }
+                            },
+                            _vm._l(_vm.accounts, function(account) {
+                              return _c(
+                                "option",
+                                { domProps: { value: account.id } },
+                                [_vm._v(_vm._s(account.title))]
+                              )
+                            }),
+                            0
+                          )
+                        ])
+                      : _vm._e()
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "modal-footer" }, [
@@ -59542,7 +59788,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "icon" }, [
-      _c("i", { staticClass: "fas fa-arrow-alt-circle-down" })
+      _c("i", { staticClass: "fas fas fa-wallet" })
     ])
   },
   function() {
@@ -59550,7 +59796,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "icon" }, [
-      _c("i", { staticClass: "fas fa-arrow-alt-circle-up" })
+      _c("i", { staticClass: "fas fa-comments-dollar" })
     ])
   },
   function() {
@@ -59564,7 +59810,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Data")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Tipo")])
+      _c("th", [_vm._v("Tipo transação")])
     ])
   },
   function() {
@@ -75352,6 +75598,21 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
 });
 Vue.filter('upText', function (text) {
   return text.charAt(0).toUpperCase() + text.slice(1);
+});
+Vue.filter('Type', function (type) {
+  switch (type) {
+    case 0:
+      return 'Saque';
+
+    case 1:
+      return 'Depósito';
+
+    case 2:
+      return 'Transferência';
+
+    default:
+      return 'Erro (case) type';
+  }
 });
 Vue.filter('myDate', function (date) {
   return moment__WEBPACK_IMPORTED_MODULE_0___default()(date).format('DD/MM/YYYY');

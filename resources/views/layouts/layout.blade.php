@@ -19,7 +19,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <body class="hold-transition sidebar-mini">
     <div class="wrapper" id="app">
 
-        <nav class="main-header navbar navbar-expand bg-white navbar-light border-bottom">
+        {{-- <nav class="main-header navbar navbar-expand bg-white navbar-light bg-info border-bottom"> --}}
+        <nav class="main-header navbar navbar-expand navbar-dark bg-primary">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -137,8 +138,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </strong>
         </footer>
     </div>
-    <!-- ./wrapper -->
-
+    <!--./wrapper -->
+    <script>
+        function MascaraCPF(cpf){
+            if(mascaraInteiro(cpf)==false){
+                event.returnValue = false;
+            }       
+            return formataCampo(cpf, '000.000.000-00', event);
+        }
+    </script>
     <script src="/js/app.js"></script>
 </body>
 </html>

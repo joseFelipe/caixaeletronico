@@ -6,7 +6,6 @@
           <div class="card-header">
             <h3 class="card-title">Perfil</h3>
           </div>
-          <!-- /.card-header -->
           <div class="card-body table-responsive p-0">
             <table class="table table-hover">
               <tbody>
@@ -32,9 +31,7 @@
               </tbody>
             </table>
           </div>
-          <!-- /.card-body -->
         </div>
-        <!-- /.card -->
       </div>
     </div>
 
@@ -144,12 +141,21 @@ export default {
     editModal(user) {
       this.editMode = true;
       this.form.fill(user);
+      console.log("user: " + user);
       $("#addNew").modal("show");
     },
     loadUsers() {
       axios.get("api/user").then(({ data }) => (this.users = data.data));
     },
     updatePassword() {
+      console.log("- - -");
+      console.log("CurrentPassword1: " + this.form.currentPassword);
+      console.log("NewPassword1: " + this.form.newPassword1);
+      console.log("NewPassword2: " + this.form.newPassword2);
+      console.log("- - -");
+
+      return false;
+
       this.form
         .put("api/user/" + this.form.id)
         .then(() => {

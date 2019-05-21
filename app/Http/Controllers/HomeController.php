@@ -25,4 +25,11 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function showChangePasswordForm()
+    {
+        return ['message' => 'test'];
+
+        // return view('auth.changepassword');
+    }
 }

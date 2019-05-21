@@ -14,9 +14,11 @@ class CreateTransactionsTable extends Migration
     public function up()
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->integer('value');
             $table->boolean('type')->default(0);
+            $table->unsignedinteger('account_origin')->nullable();
+            $table->unsignedinteger('account_destiny')->nullable();
             $table->timestamps();
         });
     }

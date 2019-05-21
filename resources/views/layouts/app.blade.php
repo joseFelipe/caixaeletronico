@@ -72,7 +72,7 @@
             </div>
         </nav> --}}
 
-        <main class="py-5">
+        <main class="py-5" id="main-image">
             @yield('content')
         </main>
     </div>
