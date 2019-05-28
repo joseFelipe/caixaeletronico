@@ -11,4 +11,6 @@ Route::apiResources(['user' => 'API\UserController']);
 
 Route::apiResources(['transaction' => 'API\TransactionController']);
 
+// Route::get('/transactio/id',"API\TransactionController@findTransactionsByAccount");
+
 Route::apiResources(['account' => 'API\AccountController']);

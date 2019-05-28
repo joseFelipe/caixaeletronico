@@ -61,6 +61,10 @@ let routes = [
     {
         path: "/users",
         component: require("./components/Users.vue").default
+    },
+    {
+        path: "/reports",
+        component: require("./components/Reports.vue").default
     }
 ];
 
@@ -83,6 +87,19 @@ Vue.filter('Type', function (type) {
             return 'Transferência';
         default:
             return 'Erro (case) type';
+    }
+});
+
+Vue.filter('Account', function (account) {
+    switch (account) {
+        case 1:
+            return 'Conta Corrente';
+        case 2:
+            return 'Conta Poupança';
+        case 3:
+            return 'Conta Salário';
+        default:
+            return '';
     }
 });
 

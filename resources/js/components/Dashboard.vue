@@ -4,34 +4,49 @@
       <div class="col-lg-4 col-6">
         <div class="small-box bg-info-gradient">
           <div class="inner">
+            <h5>R$</h5>
             <h3>{{ current_account != 0 ? current_account : '0' }}</h3>
             <h5>Conta Corrente</h5>
           </div>
           <div class="icon">
             <i class="fas fa-comment-dollar"></i>
           </div>
+          <a href="#" class="small-box-footer">
+            Gerar relatório de transações
+            <i class="fa fa-arrow-circle-right"></i>
+          </a>
         </div>
       </div>
       <div class="col-lg-4 col-6">
         <div class="small-box bg-warning-gradient">
           <div class="inner">
+            <h5>R$</h5>
             <h3>{{ saving_account != 0 ? saving_account : '0' }}</h3>
             <h5>Conta Poupança</h5>
           </div>
           <div class="icon">
             <i class="fas fas fa-wallet"></i>
           </div>
+          <a href="#" class="small-box-footer">
+            Gerar relatório de transações
+            <i class="fa fa-arrow-circle-right"></i>
+          </a>
         </div>
       </div>
       <div class="col-lg-4 col-6">
         <div class="small-box bg-success-gradient">
           <div class="inner">
+            <h5>R$</h5>
             <h3>{{ salary_account != 0 ? salary_account : '0' }}</h3>
             <h5>Conta Salário</h5>
           </div>
           <div class="icon">
             <i class="fas fa-comments-dollar"></i>
           </div>
+          <a href="#" class="small-box-footer">
+            Gerar relatório de transações
+            <i class="fa fa-arrow-circle-right"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -52,23 +67,37 @@
           <div class="card-body table-responsive p-0">
             <table class="table table-hover">
               <tbody>
-                <tr>
+                <tr class="font-weight-bold">
                   <th>ID</th>
                   <th>Valor</th>
-                  <th>Data</th>
                   <th>Tipo transação</th>
+                  <th class="column-account-origin">Conta Origem</th>
+                  <th></th>
+                  <th class="column-account-destiny">Conta Destino</th>
+                  <th>Data</th>
                 </tr>
                 <tr v-for="transaction in transactions" :key="transaction.id">
                   <td>{{ transaction.id }}</td>
-                  <td>{{ transaction.value }}</td>
-                  <td>{{ transaction.created_at | myDate }}</td>
+                  <td>R$ {{ transaction.value }}</td>
                   <td>{{ transaction.type | Type }}</td>
-                  <!-- <p>Using mustaches: {{ transaction.type }}</p> -->
+                  <td class="column-account-origin">{{ transaction.account_origin | Account }}</td>
                   <td>
+                    <p v-if="transaction.account_destiny != null">
+                      <i class="icon-transfer fas fa-arrow-right"></i>
+                    </p>
+                  </td>
+                  <td class="column-account-destiny">{{ transaction.account_destiny | Account }}</td>
+                  <td>{{ transaction.created_at | myDate }}</td>
+                  <!-- <td>
+                    <p v-html="transaction.type"></p>
+                  </td>-->
+                  <!-- {{ transaction.type | Type }}</td> -->
+                  <!-- <p>Using mustaches: {{ transaction.type }}</p> -->
+                  <!-- <td>
                     <p>
                       <small class="badge badge-danger" v-html="Type"></small>
                     </p>
-                  </td>
+                  </td>-->
                 </tr>
               </tbody>
             </table>
@@ -136,7 +165,11 @@
                   v-model="form.accountOrigin"
                   class="form-control"
                 >
-                  <option v-for="account in accounts" v-bind:value="account.id">{{ account.title }}</option>
+                  <option
+                    v-for="account in accounts"
+                    v-bind:value="account.id"
+                    :key="account.id"
+                  >{{ account.title }}</option>
                 </select>
               </div>
 
@@ -148,7 +181,11 @@
                   v-model="form.accountDestiny"
                   class="form-control"
                 >
-                  <option v-for="account in accounts" v-bind:value="account.id">{{ account.title }}</option>
+                  <option
+                    v-for="account in accounts"
+                    v-bind:value="account.id"
+                    :key="account.id"
+                  >{{ account.title }}</option>
                 </select>
               </div>
             </div>
@@ -176,7 +213,8 @@ export default {
         type: "",
         accountOrigin: "",
         accountDestiny: ""
-      })
+      }),
+      sbadge: `<small class="badge badge-danger">Transferência</small>`
     };
   },
   methods: {
@@ -232,14 +270,6 @@ export default {
         ? parseInt(this.form.accountDestiny)
         : "";
 
-      console.log("---");
-      console.log("Account Origin: " + accountOrigin);
-      console.log("---");
-      console.log("Account Destiny: " + accountDestiny);
-      console.log("---");
-      console.log("Type Transaciont: " + typeTransaction);
-      console.log("---");
-
       if (isNaN(value)) {
         toast.fire({
           type: "warning",
@@ -263,7 +293,6 @@ export default {
       }
 
       if (typeTransaction === "") {
-        console.log("Type: " + typeTransaction);
         toast.fire({
           type: "warning",
           title: "Selecione o tipo de transação"

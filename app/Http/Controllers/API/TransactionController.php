@@ -45,11 +45,18 @@ class TransactionController extends Controller
                         * -1 ELSE TRANSACTIONS.VALUE END) AS salary_account')
                     )->where('account_origin', 3)->orWhere('account_destiny', 3)->first();
         
-        $transaction = Transaction::latest()->paginate(10);
+        $transactions_current_account = DB::table('transactions')->where('account_origin', 1)->paginate(100);
+        $transactions_saving_account = DB::table('transactions')->where('account_origin', 2)->paginate(100);
+        $transactions_salary_account = DB::table('transactions')->where('account_destiny', '<>', null)->paginate(100);
+        
+        $transaction = Transaction::latest()->paginate(100);
 
         // return response()->json($balance, $transaction);
 
         return [
+            "transactions_current_account" => $transactions_current_account,
+            "transactions_saving_account" => $transactions_saving_account,
+            "transactions_salary_account" => $transactions_salary_account,
             "transaction" => $transaction,
             "current_account" => $current_account->current_account,
             "saving_account" => $saving_account->saving_account,
@@ -84,9 +91,15 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($account)
     {
-        //
+        $transactions = DB::table('transactions')
+            ->where('account_origin', $account)->orWhere('account_destiny', $account)
+            ->latest()->paginate(100);
+
+        return [
+            "transacoes" => $transactions,
+        ];
     }
 
     /**

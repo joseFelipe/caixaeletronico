@@ -1946,6 +1946,43 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1957,7 +1994,8 @@ __webpack_require__.r(__webpack_exports__);
         type: "",
         accountOrigin: "",
         accountDestiny: ""
-      })
+      }),
+      sbadge: "<small class=\"badge badge-danger\">Transfer\xEAncia</small>"
     };
   },
   methods: {
@@ -1999,13 +2037,6 @@ __webpack_require__.r(__webpack_exports__);
       typeTransaction = this.form.type ? parseInt(this.form.type) : "";
       accountOrigin = this.form.accountOrigin ? parseInt(this.form.accountOrigin) : "";
       accountDestiny = this.form.accountDestiny ? parseInt(this.form.accountDestiny) : "";
-      console.log("---");
-      console.log("Account Origin: " + accountOrigin);
-      console.log("---");
-      console.log("Account Destiny: " + accountDestiny);
-      console.log("---");
-      console.log("Type Transaciont: " + typeTransaction);
-      console.log("---");
 
       if (isNaN(value)) {
         toast.fire({
@@ -2030,7 +2061,6 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (typeTransaction === "") {
-        console.log("Type: " + typeTransaction);
         toast.fire({
           type: "warning",
           title: "Selecione o tipo de transação"
@@ -2437,6 +2467,159 @@ __webpack_require__.r(__webpack_exports__);
     this.loadUsers();
     Fire.$on("TriggerLoad", function () {
       _this4.loadUsers();
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reports.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Reports.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      selected: "",
+      editMode: true,
+      transactions: {},
+      transacoes: {},
+      form: new Form({
+        account: ""
+      })
+    };
+  },
+  methods: {
+    loadAccounts: function loadAccounts() {
+      var _this = this;
+
+      axios.get("api/account").then(function (_ref) {
+        var data = _ref.data;
+        return _this.accounts = data.accounts.data;
+      });
+    },
+    loadTransactions: function loadTransactions() {
+      var _this2 = this;
+
+      axios.get("api/transaction").then(function (_ref2) {
+        var data = _ref2.data;
+        return _this2.transactions = data.transaction.data;
+      });
+    },
+    onChangeAccount: function onChangeAccount(event) {
+      this.loadTransactionsByAccount(this.form.account.id);
+    },
+    loadTransactionsByAccount: function loadTransactionsByAccount() {
+      var _this3 = this;
+
+      axios.get("api/transaction/" + this.form.account.id).then(function (_ref3) {
+        var data = _ref3.data;
+        return _this3.transacoes = data.transacoes.data;
+      });
+    },
+    exportPDF: function exportPDF() {
+      if (this.form.account === "") {
+        toast.fire({
+          type: "warning",
+          title: "Selecione a conta"
+        });
+        return false;
+      }
+
+      html2canvas(document.getElementById("div-transactions"), {
+        onrendered: function onrendered(canvas) {
+          var img = canvas.toDataURL("image/png");
+          var doc = new jsPDF({
+            orientation: "landscape"
+          });
+          doc.addImage(img, "JPEG", 5, 5);
+          doc.save("test.pdf");
+        }
+      });
+    }
+  },
+  created: function created() {
+    this.loadAccounts();
+    this.loadTransactions();
+    Fire.$on("TriggerLoad", function () {//this.loadTransactionsByAccount();
     });
   }
 });
@@ -59324,6 +59507,8 @@ var render = function() {
       _c("div", { staticClass: "col-lg-4 col-6" }, [
         _c("div", { staticClass: "small-box bg-info-gradient" }, [
           _c("div", { staticClass: "inner" }, [
+            _c("h5", [_vm._v("R$")]),
+            _vm._v(" "),
             _c("h3", [
               _vm._v(
                 _vm._s(_vm.current_account != 0 ? _vm.current_account : "0")
@@ -59333,13 +59518,17 @@ var render = function() {
             _c("h5", [_vm._v("Conta Corrente")])
           ]),
           _vm._v(" "),
-          _vm._m(0)
+          _vm._m(0),
+          _vm._v(" "),
+          _vm._m(1)
         ])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-lg-4 col-6" }, [
         _c("div", { staticClass: "small-box bg-warning-gradient" }, [
           _c("div", { staticClass: "inner" }, [
+            _c("h5", [_vm._v("R$")]),
+            _vm._v(" "),
             _c("h3", [
               _vm._v(_vm._s(_vm.saving_account != 0 ? _vm.saving_account : "0"))
             ]),
@@ -59347,13 +59536,17 @@ var render = function() {
             _c("h5", [_vm._v("Conta Poupança")])
           ]),
           _vm._v(" "),
-          _vm._m(1)
+          _vm._m(2),
+          _vm._v(" "),
+          _vm._m(3)
         ])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-lg-4 col-6" }, [
         _c("div", { staticClass: "small-box bg-success-gradient" }, [
           _c("div", { staticClass: "inner" }, [
+            _c("h5", [_vm._v("R$")]),
+            _vm._v(" "),
             _c("h3", [
               _vm._v(_vm._s(_vm.salary_account != 0 ? _vm.salary_account : "0"))
             ]),
@@ -59361,7 +59554,9 @@ var render = function() {
             _c("h5", [_vm._v("Conta Salário")])
           ]),
           _vm._v(" "),
-          _vm._m(2)
+          _vm._m(4),
+          _vm._v(" "),
+          _vm._m(5)
         ])
       ])
     ]),
@@ -59389,29 +59584,42 @@ var render = function() {
               _c(
                 "tbody",
                 [
-                  _vm._m(3),
+                  _vm._m(6),
                   _vm._v(" "),
                   _vm._l(_vm.transactions, function(transaction) {
                     return _c("tr", { key: transaction.id }, [
                       _c("td", [_vm._v(_vm._s(transaction.id))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(transaction.value))]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm._f("myDate")(transaction.created_at)))
-                      ]),
+                      _c("td", [_vm._v("R$ " + _vm._s(transaction.value))]),
                       _vm._v(" "),
                       _c("td", [
                         _vm._v(_vm._s(_vm._f("Type")(transaction.type)))
                       ]),
                       _vm._v(" "),
+                      _c("td", { staticClass: "column-account-origin" }, [
+                        _vm._v(
+                          _vm._s(_vm._f("Account")(transaction.account_origin))
+                        )
+                      ]),
+                      _vm._v(" "),
                       _c("td", [
-                        _c("p", [
-                          _c("small", {
-                            staticClass: "badge badge-danger",
-                            domProps: { innerHTML: _vm._s(_vm.Type) }
-                          })
-                        ])
+                        transaction.account_destiny != null
+                          ? _c("p", [
+                              _c("i", {
+                                staticClass: "icon-transfer fas fa-arrow-right"
+                              })
+                            ])
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "column-account-destiny" }, [
+                        _vm._v(
+                          _vm._s(_vm._f("Account")(transaction.account_destiny))
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(_vm._s(_vm._f("myDate")(transaction.created_at)))
                       ])
                     ])
                   })
@@ -59480,7 +59688,7 @@ var render = function() {
                   [_vm._v("Nova transação")]
                 ),
                 _vm._v(" "),
-                _vm._m(4)
+                _vm._m(7)
               ]),
               _vm._v(" "),
               _c(
@@ -59657,7 +59865,10 @@ var render = function() {
                         _vm._l(_vm.accounts, function(account) {
                           return _c(
                             "option",
-                            { domProps: { value: account.id } },
+                            {
+                              key: account.id,
+                              domProps: { value: account.id }
+                            },
                             [_vm._v(_vm._s(account.title))]
                           )
                         }),
@@ -59711,7 +59922,10 @@ var render = function() {
                             _vm._l(_vm.accounts, function(account) {
                               return _c(
                                 "option",
-                                { domProps: { value: account.id } },
+                                {
+                                  key: account.id,
+                                  domProps: { value: account.id }
+                                },
                                 [_vm._v(_vm._s(account.title))]
                               )
                             }),
@@ -59787,8 +60001,26 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("a", { staticClass: "small-box-footer", attrs: { href: "#" } }, [
+      _vm._v("\n          Gerar relatório de transações\n          "),
+      _c("i", { staticClass: "fa fa-arrow-circle-right" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "icon" }, [
       _c("i", { staticClass: "fas fas fa-wallet" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("a", { staticClass: "small-box-footer", attrs: { href: "#" } }, [
+      _vm._v("\n          Gerar relatório de transações\n          "),
+      _c("i", { staticClass: "fa fa-arrow-circle-right" })
     ])
   },
   function() {
@@ -59803,14 +60035,33 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tr", [
+    return _c("a", { staticClass: "small-box-footer", attrs: { href: "#" } }, [
+      _vm._v("\n          Gerar relatório de transações\n          "),
+      _c("i", { staticClass: "fa fa-arrow-circle-right" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", { staticClass: "font-weight-bold" }, [
       _c("th", [_vm._v("ID")]),
       _vm._v(" "),
       _c("th", [_vm._v("Valor")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Data")]),
+      _c("th", [_vm._v("Tipo transação")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Tipo transação")])
+      _c("th", { staticClass: "column-account-origin" }, [
+        _vm._v("Conta Origem")
+      ]),
+      _vm._v(" "),
+      _c("th"),
+      _vm._v(" "),
+      _c("th", { staticClass: "column-account-destiny" }, [
+        _vm._v("Conta Destino")
+      ]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Data")])
     ])
   },
   function() {
@@ -60233,6 +60484,209 @@ var staticRenderFns = [
         { staticClass: "btn btn-primary", attrs: { type: "submit" } },
         [_vm._v("Atualizar")]
       )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reports.vue?vue&type=template&id=6c52f8b8&":
+/*!**********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Reports.vue?vue&type=template&id=6c52f8b8& ***!
+  \**********************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row mt-5" }, [
+      _c("div", { staticClass: "col-md-12 col-lg-12" }, [
+        _c("h3", [_vm._v("Selecione a conta")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-group" }, [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.form.account,
+                  expression: "form.account"
+                }
+              ],
+              staticClass: "custom-select",
+              attrs: { name: "account-origin", id: "account-origin" },
+              on: {
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.form,
+                      "account",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  },
+                  function($event) {
+                    return _vm.onChangeAccount($event)
+                  }
+                ]
+              }
+            },
+            _vm._l(_vm.accounts, function(account) {
+              return _c(
+                "option",
+                {
+                  key: account.id,
+                  domProps: { value: { id: account.id, text: account.title } }
+                },
+                [_vm._v(_vm._s(account.title))]
+              )
+            }),
+            0
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "input-group-append" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-outline-primary",
+                on: { click: _vm.exportPDF }
+              },
+              [
+                _vm._v("\n            Gerar relatório\n            "),
+                _c("i", { staticClass: "fas fa-file-download" })
+              ]
+            )
+          ])
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", { staticClass: "row mt-5" }, [
+      _c(
+        "div",
+        {
+          staticClass: "col-md-12 col-lg-12",
+          attrs: { id: "div-transactions" }
+        },
+        [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "card-header" }, [
+              _c("h3", { staticClass: "card-title" }, [
+                _vm._v(
+                  "Transações " +
+                    _vm._s(
+                      _vm.form.account.text == null
+                        ? ""
+                        : " - Conta " + _vm.form.account.text
+                    )
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-body table-responsive p-0" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _c(
+                  "tbody",
+                  [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _vm._l(_vm.transactions, function(transaction) {
+                      return _c("tr", { key: transaction.id })
+                    }),
+                    _vm._v(" "),
+                    _vm._l(_vm.transacoes, function(transacao) {
+                      return _c("tr", { key: transacao.id }, [
+                        _c("td", [_vm._v(_vm._s(transacao.id))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v("R$ " + _vm._s(transacao.value))]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(_vm._s(_vm._f("Type")(transacao.type)))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "column-account-origin" }, [
+                          _vm._v(
+                            _vm._s(_vm._f("Account")(transacao.account_origin))
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          transacao.account_destiny != null
+                            ? _c("p", [
+                                _c("i", {
+                                  staticClass:
+                                    "icon-transfer fas fa-arrow-right"
+                                })
+                              ])
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "column-account-destiny" }, [
+                          _vm._v(
+                            _vm._s(_vm._f("Account")(transacao.account_destiny))
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(_vm._s(_vm._f("myDate")(transacao.created_at)))
+                        ])
+                      ])
+                    })
+                  ],
+                  2
+                )
+              ])
+            ])
+          ])
+        ]
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", { staticClass: "font-weight-bold" }, [
+      _c("th", [_vm._v("ID")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Valor")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Tipo transação")]),
+      _vm._v(" "),
+      _c("th", { staticClass: "column-account-origin" }, [
+        _vm._v("Conta Origem")
+      ]),
+      _vm._v(" "),
+      _c("th"),
+      _vm._v(" "),
+      _c("th", { staticClass: "column-account-destiny" }, [
+        _vm._v("Conta Destino")
+      ]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Data")])
     ])
   }
 ]
@@ -75590,6 +76044,9 @@ var routes = [{
 }, {
   path: "/users",
   component: __webpack_require__(/*! ./components/Users.vue */ "./resources/js/components/Users.vue")["default"]
+}, {
+  path: "/reports",
+  component: __webpack_require__(/*! ./components/Reports.vue */ "./resources/js/components/Reports.vue")["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
   mode: "history",
@@ -75612,6 +76069,21 @@ Vue.filter('Type', function (type) {
 
     default:
       return 'Erro (case) type';
+  }
+});
+Vue.filter('Account', function (account) {
+  switch (account) {
+    case 1:
+      return 'Conta Corrente';
+
+    case 2:
+      return 'Conta Poupança';
+
+    case 3:
+      return 'Conta Salário';
+
+    default:
+      return '';
   }
 });
 Vue.filter('myDate', function (date) {
@@ -75894,6 +76366,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Profile_vue_vue_type_template_id_3bd692e4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Profile_vue_vue_type_template_id_3bd692e4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Reports.vue":
+/*!*********************************************!*\
+  !*** ./resources/js/components/Reports.vue ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Reports_vue_vue_type_template_id_6c52f8b8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Reports.vue?vue&type=template&id=6c52f8b8& */ "./resources/js/components/Reports.vue?vue&type=template&id=6c52f8b8&");
+/* harmony import */ var _Reports_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Reports.vue?vue&type=script&lang=js& */ "./resources/js/components/Reports.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Reports_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Reports_vue_vue_type_template_id_6c52f8b8___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Reports_vue_vue_type_template_id_6c52f8b8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Reports.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Reports.vue?vue&type=script&lang=js&":
+/*!**********************************************************************!*\
+  !*** ./resources/js/components/Reports.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Reports_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Reports.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reports.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Reports_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Reports.vue?vue&type=template&id=6c52f8b8&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/Reports.vue?vue&type=template&id=6c52f8b8& ***!
+  \****************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Reports_vue_vue_type_template_id_6c52f8b8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Reports.vue?vue&type=template&id=6c52f8b8& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reports.vue?vue&type=template&id=6c52f8b8&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Reports_vue_vue_type_template_id_6c52f8b8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Reports_vue_vue_type_template_id_6c52f8b8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

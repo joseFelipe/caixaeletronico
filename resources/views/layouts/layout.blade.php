@@ -94,6 +94,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </router-link>
                         </li>
                         <li class="nav-item">
+                            <router-link to="/reports" class="nav-link">
+                                <i class="nav-icon fa fa-file-alt"></i>
+                                <p>Relatórios</p>
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">
@@ -148,5 +154,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         }
     </script>
     <script src="/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.1.1/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 </body>
 </html>
