@@ -90,6 +90,19 @@ Vue.filter('Type', function (type) {
     }
 });
 
+Vue.filter('TypeBadge', function (type) {
+    switch (type) {
+        case 0:
+            return 'badge badge-pill badge-danger';
+        case 1:
+            return 'badge badge-pill badge-success';
+        case 2:
+            return 'badge badge-pill badge-primary';
+        default:
+            return 'Erro (case) type badge';
+    }
+});
+
 Vue.filter('Account', function (account) {
     switch (account) {
         case 1:

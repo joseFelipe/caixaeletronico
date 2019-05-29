@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row mt-5">
-      <div class="col-md-12 col-lg-12">
+      <div class="col-md-11 col-lg-11">
         <h3>Selecione a conta</h3>
         <div class="input-group">
           <select
@@ -28,7 +28,7 @@
     </div>
     <hr>
     <div class="row mt-5">
-      <div class="col-md-12 col-lg-12" id="div-transactions">
+      <div class="col-md-11 col-lg-11" id="div-transactions">
         <div class="card">
           <div class="card-header">
             <h3
@@ -36,23 +36,27 @@
             >Transações {{ form.account.text == null ? '' : " - Conta " + form.account.text }}</h3>
           </div>
           <div class="card-body table-responsive p-0">
-            <table class="table table-hover">
-              <tbody>
-                <tr class="font-weight-bold">
+            <table class="table table-striped">
+              <thead>
+                <tr>
                   <th>ID</th>
                   <th>Valor</th>
-                  <th>Tipo transação</th>
+                  <th class="column-account-type">Tipo transação</th>
                   <th class="column-account-origin">Conta Origem</th>
                   <th></th>
                   <th class="column-account-destiny">Conta Destino</th>
                   <th>Data</th>
                 </tr>
+              </thead>
+              <tbody>
                 <tr v-for="transaction in transactions" :key="transaction.id"></tr>
 
                 <tr v-for="transacao in transacoes" :key="transacao.id">
                   <td>{{ transacao.id }}</td>
                   <td>R$ {{ transacao.value }}</td>
-                  <td>{{ transacao.type | Type }}</td>
+                  <td class="column-account-type">
+                    <span v-bind:class="transacao.type | TypeBadge">{{ transacao.type | Type }}</span>
+                  </td>
                   <td class="column-account-origin">{{ transacao.account_origin | Account }}</td>
                   <td>
                     <p v-if="transacao.account_destiny != null">
@@ -64,6 +68,9 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="card-footer clearfix">
+            <h5 v-if="this.account_value">Total: R$ {{ this.account_value }}</h5>
           </div>
         </div>
       </div>
@@ -94,11 +101,25 @@ export default {
     loadTransactions() {
       axios
         .get("api/transaction")
-        .then(({ data }) => (this.transactions = data.transaction.data));
+        .then(
+          ({ data }) => (
+            (this.transactions = data.transaction.data),
+            (this.current_account = data.current_account),
+            (this.saving_account = data.saving_account),
+            (this.salary_account = data.salary_account)
+          )
+        );
     },
 
     onChangeAccount(event) {
       this.loadTransactionsByAccount(this.form.account.id);
+      if (this.form.account.id == 1) {
+        this.account_value = this.current_account;
+      } else if (this.form.account.id == 2) {
+        this.account_value = this.saving_account;
+      } else {
+        this.account_value = this.salary_account;
+      }
     },
 
     loadTransactionsByAccount() {
@@ -125,7 +146,7 @@ export default {
           });
 
           doc.addImage(img, "JPEG", 5, 5);
-          doc.save("test.pdf");
+          doc.save("transaction.pdf");
         }
       });
     }

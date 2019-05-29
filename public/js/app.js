@@ -1968,21 +1968,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2555,6 +2540,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2581,11 +2573,19 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get("api/transaction").then(function (_ref2) {
         var data = _ref2.data;
-        return _this2.transactions = data.transaction.data;
+        return _this2.transactions = data.transaction.data, _this2.current_account = data.current_account, _this2.saving_account = data.saving_account, _this2.salary_account = data.salary_account;
       });
     },
     onChangeAccount: function onChangeAccount(event) {
       this.loadTransactionsByAccount(this.form.account.id);
+
+      if (this.form.account.id == 1) {
+        this.account_value = this.current_account;
+      } else if (this.form.account.id == 2) {
+        this.account_value = this.saving_account;
+      } else {
+        this.account_value = this.salary_account;
+      }
     },
     loadTransactionsByAccount: function loadTransactionsByAccount() {
       var _this3 = this;
@@ -2611,7 +2611,7 @@ __webpack_require__.r(__webpack_exports__);
             orientation: "landscape"
           });
           doc.addImage(img, "JPEG", 5, 5);
-          doc.save("test.pdf");
+          doc.save("transaction.pdf");
         }
       });
     }
@@ -59520,7 +59520,7 @@ var render = function() {
           _vm._v(" "),
           _vm._m(0),
           _vm._v(" "),
-          _vm._m(1)
+          _c("span", { staticClass: "small-box-footer" })
         ])
       ]),
       _vm._v(" "),
@@ -59536,9 +59536,9 @@ var render = function() {
             _c("h5", [_vm._v("Conta Poupança")])
           ]),
           _vm._v(" "),
-          _vm._m(2),
+          _vm._m(1),
           _vm._v(" "),
-          _vm._m(3)
+          _c("span", { staticClass: "small-box-footer" })
         ])
       ]),
       _vm._v(" "),
@@ -59554,9 +59554,9 @@ var render = function() {
             _c("h5", [_vm._v("Conta Salário")])
           ]),
           _vm._v(" "),
-          _vm._m(4),
+          _vm._m(2),
           _vm._v(" "),
-          _vm._m(5)
+          _c("span", { staticClass: "small-box-footer" })
         ])
       ])
     ]),
@@ -59580,51 +59580,53 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body table-responsive p-0" }, [
-            _c("table", { staticClass: "table table-hover" }, [
+            _c("table", { staticClass: "table table-striped" }, [
+              _vm._m(3),
+              _vm._v(" "),
               _c(
                 "tbody",
-                [
-                  _vm._m(6),
-                  _vm._v(" "),
-                  _vm._l(_vm.transactions, function(transaction) {
-                    return _c("tr", { key: transaction.id }, [
-                      _c("td", [_vm._v(_vm._s(transaction.id))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v("R$ " + _vm._s(transaction.value))]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm._f("Type")(transaction.type)))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "column-account-origin" }, [
-                        _vm._v(
-                          _vm._s(_vm._f("Account")(transaction.account_origin))
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        transaction.account_destiny != null
-                          ? _c("p", [
-                              _c("i", {
-                                staticClass: "icon-transfer fas fa-arrow-right"
-                              })
-                            ])
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _c("td", { staticClass: "column-account-destiny" }, [
-                        _vm._v(
-                          _vm._s(_vm._f("Account")(transaction.account_destiny))
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(_vm._s(_vm._f("myDate")(transaction.created_at)))
-                      ])
+                _vm._l(_vm.transactions, function(transaction) {
+                  return _c("tr", { key: transaction.id }, [
+                    _c("td", [_vm._v(_vm._s(transaction.id))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v("R$ " + _vm._s(transaction.value))]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "column-account-type" }, [
+                      _c(
+                        "span",
+                        { class: _vm._f("TypeBadge")(transaction.type) },
+                        [_vm._v(_vm._s(_vm._f("Type")(transaction.type)))]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "column-account-origin" }, [
+                      _vm._v(
+                        _vm._s(_vm._f("Account")(transaction.account_origin))
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      transaction.account_destiny != null
+                        ? _c("p", [
+                            _c("i", {
+                              staticClass: "icon-transfer fas fa-arrow-right"
+                            })
+                          ])
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "column-account-destiny" }, [
+                      _vm._v(
+                        _vm._s(_vm._f("Account")(transaction.account_destiny))
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(_vm._s(_vm._f("myDate")(transaction.created_at)))
                     ])
-                  })
-                ],
-                2
+                  ])
+                }),
+                0
               )
             ])
           ])
@@ -59688,7 +59690,7 @@ var render = function() {
                   [_vm._v("Nova transação")]
                 ),
                 _vm._v(" "),
-                _vm._m(7)
+                _vm._m(4)
               ]),
               _vm._v(" "),
               _c(
@@ -60001,26 +60003,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "small-box-footer", attrs: { href: "#" } }, [
-      _vm._v("\n          Gerar relatório de transações\n          "),
-      _c("i", { staticClass: "fa fa-arrow-circle-right" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "icon" }, [
       _c("i", { staticClass: "fas fas fa-wallet" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "small-box-footer", attrs: { href: "#" } }, [
-      _vm._v("\n          Gerar relatório de transações\n          "),
-      _c("i", { staticClass: "fa fa-arrow-circle-right" })
     ])
   },
   function() {
@@ -60035,33 +60019,28 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "small-box-footer", attrs: { href: "#" } }, [
-      _vm._v("\n          Gerar relatório de transações\n          "),
-      _c("i", { staticClass: "fa fa-arrow-circle-right" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", { staticClass: "font-weight-bold" }, [
-      _c("th", [_vm._v("ID")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Valor")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Tipo transação")]),
-      _vm._v(" "),
-      _c("th", { staticClass: "column-account-origin" }, [
-        _vm._v("Conta Origem")
-      ]),
-      _vm._v(" "),
-      _c("th"),
-      _vm._v(" "),
-      _c("th", { staticClass: "column-account-destiny" }, [
-        _vm._v("Conta Destino")
-      ]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Data")])
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Valor")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "column-account-type" }, [
+          _vm._v("Tipo transação")
+        ]),
+        _vm._v(" "),
+        _c("th", { staticClass: "column-account-origin" }, [
+          _vm._v("Conta Origem")
+        ]),
+        _vm._v(" "),
+        _c("th"),
+        _vm._v(" "),
+        _c("th", { staticClass: "column-account-destiny" }, [
+          _vm._v("Conta Destino")
+        ]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Data")])
+      ])
     ])
   },
   function() {
@@ -60510,7 +60489,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row mt-5" }, [
-      _c("div", { staticClass: "col-md-12 col-lg-12" }, [
+      _c("div", { staticClass: "col-md-11 col-lg-11" }, [
         _c("h3", [_vm._v("Selecione a conta")]),
         _vm._v(" "),
         _c("div", { staticClass: "input-group" }, [
@@ -60586,7 +60565,7 @@ var render = function() {
       _c(
         "div",
         {
-          staticClass: "col-md-12 col-lg-12",
+          staticClass: "col-md-11 col-lg-11",
           attrs: { id: "div-transactions" }
         },
         [
@@ -60605,12 +60584,12 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-body table-responsive p-0" }, [
-              _c("table", { staticClass: "table table-hover" }, [
+              _c("table", { staticClass: "table table-striped" }, [
+                _vm._m(0),
+                _vm._v(" "),
                 _c(
                   "tbody",
                   [
-                    _vm._m(0),
-                    _vm._v(" "),
                     _vm._l(_vm.transactions, function(transaction) {
                       return _c("tr", { key: transaction.id })
                     }),
@@ -60621,8 +60600,12 @@ var render = function() {
                         _vm._v(" "),
                         _c("td", [_vm._v("R$ " + _vm._s(transacao.value))]),
                         _vm._v(" "),
-                        _c("td", [
-                          _vm._v(_vm._s(_vm._f("Type")(transacao.type)))
+                        _c("td", { staticClass: "column-account-type" }, [
+                          _c(
+                            "span",
+                            { class: _vm._f("TypeBadge")(transacao.type) },
+                            [_vm._v(_vm._s(_vm._f("Type")(transacao.type)))]
+                          )
                         ]),
                         _vm._v(" "),
                         _c("td", { staticClass: "column-account-origin" }, [
@@ -60657,6 +60640,12 @@ var render = function() {
                   2
                 )
               ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-footer clearfix" }, [
+              this.account_value
+                ? _c("h5", [_vm._v("Total: R$ " + _vm._s(this.account_value))])
+                : _vm._e()
             ])
           ])
         ]
@@ -60669,24 +60658,28 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tr", { staticClass: "font-weight-bold" }, [
-      _c("th", [_vm._v("ID")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Valor")]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Tipo transação")]),
-      _vm._v(" "),
-      _c("th", { staticClass: "column-account-origin" }, [
-        _vm._v("Conta Origem")
-      ]),
-      _vm._v(" "),
-      _c("th"),
-      _vm._v(" "),
-      _c("th", { staticClass: "column-account-destiny" }, [
-        _vm._v("Conta Destino")
-      ]),
-      _vm._v(" "),
-      _c("th", [_vm._v("Data")])
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Valor")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "column-account-type" }, [
+          _vm._v("Tipo transação")
+        ]),
+        _vm._v(" "),
+        _c("th", { staticClass: "column-account-origin" }, [
+          _vm._v("Conta Origem")
+        ]),
+        _vm._v(" "),
+        _c("th"),
+        _vm._v(" "),
+        _c("th", { staticClass: "column-account-destiny" }, [
+          _vm._v("Conta Destino")
+        ]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Data")])
+      ])
     ])
   }
 ]
@@ -76069,6 +76062,21 @@ Vue.filter('Type', function (type) {
 
     default:
       return 'Erro (case) type';
+  }
+});
+Vue.filter('TypeBadge', function (type) {
+  switch (type) {
+    case 0:
+      return 'badge badge-pill badge-danger';
+
+    case 1:
+      return 'badge badge-pill badge-success';
+
+    case 2:
+      return 'badge badge-pill badge-primary';
+
+    default:
+      return 'Erro (case) type badge';
   }
 });
 Vue.filter('Account', function (account) {

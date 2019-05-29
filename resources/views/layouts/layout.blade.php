@@ -88,15 +88,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </ul>
                         </li> --}}
                         <li class="nav-item">
-                            <router-link to="/profile" class="nav-link">
-                                <i class="nav-icon fa fa-user"></i>
-                                <p>Perfil</p>
-                            </router-link>
-                        </li>
-                        <li class="nav-item">
                             <router-link to="/reports" class="nav-link">
                                 <i class="nav-icon fa fa-file-alt"></i>
                                 <p>Relatórios</p>
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/profile" class="nav-link">
+                                <i class="nav-icon fa fa-user"></i>
+                                <p>Perfil</p>
                             </router-link>
                         </li>
                         <li class="nav-item">

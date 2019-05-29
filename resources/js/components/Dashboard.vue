@@ -11,10 +11,7 @@
           <div class="icon">
             <i class="fas fa-comment-dollar"></i>
           </div>
-          <a href="#" class="small-box-footer">
-            Gerar relatório de transações
-            <i class="fa fa-arrow-circle-right"></i>
-          </a>
+          <span class="small-box-footer"></span>
         </div>
       </div>
       <div class="col-lg-4 col-6">
@@ -27,10 +24,7 @@
           <div class="icon">
             <i class="fas fas fa-wallet"></i>
           </div>
-          <a href="#" class="small-box-footer">
-            Gerar relatório de transações
-            <i class="fa fa-arrow-circle-right"></i>
-          </a>
+          <span class="small-box-footer"></span>
         </div>
       </div>
       <div class="col-lg-4 col-6">
@@ -43,10 +37,7 @@
           <div class="icon">
             <i class="fas fa-comments-dollar"></i>
           </div>
-          <a href="#" class="small-box-footer">
-            Gerar relatório de transações
-            <i class="fa fa-arrow-circle-right"></i>
-          </a>
+          <span class="small-box-footer"></span>
         </div>
       </div>
     </div>
@@ -65,21 +56,25 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body table-responsive p-0">
-            <table class="table table-hover">
-              <tbody>
-                <tr class="font-weight-bold">
+            <table class="table table-striped">
+              <thead>
+                <tr>
                   <th>ID</th>
                   <th>Valor</th>
-                  <th>Tipo transação</th>
+                  <th class="column-account-type">Tipo transação</th>
                   <th class="column-account-origin">Conta Origem</th>
                   <th></th>
                   <th class="column-account-destiny">Conta Destino</th>
                   <th>Data</th>
                 </tr>
+              </thead>
+              <tbody>
                 <tr v-for="transaction in transactions" :key="transaction.id">
                   <td>{{ transaction.id }}</td>
                   <td>R$ {{ transaction.value }}</td>
-                  <td>{{ transaction.type | Type }}</td>
+                  <td class="column-account-type">
+                    <span v-bind:class="transaction.type | TypeBadge">{{ transaction.type | Type }}</span>
+                  </td>
                   <td class="column-account-origin">{{ transaction.account_origin | Account }}</td>
                   <td>
                     <p v-if="transaction.account_destiny != null">
@@ -88,16 +83,6 @@
                   </td>
                   <td class="column-account-destiny">{{ transaction.account_destiny | Account }}</td>
                   <td>{{ transaction.created_at | myDate }}</td>
-                  <!-- <td>
-                    <p v-html="transaction.type"></p>
-                  </td>-->
-                  <!-- {{ transaction.type | Type }}</td> -->
-                  <!-- <p>Using mustaches: {{ transaction.type }}</p> -->
-                  <!-- <td>
-                    <p>
-                      <small class="badge badge-danger" v-html="Type"></small>
-                    </p>
-                  </td>-->
                 </tr>
               </tbody>
             </table>

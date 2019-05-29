@@ -39,6 +39,28 @@ $fa-font-path: "../webfonts";
     text-align: left;
 }
 
+.column-account-type {
+    text-align: center;
+}
+
 .icon-transfer {
     color: #d2cfcf;
+}
+
+.badge-danger {
+    color: #ffffff;
+    background-color: #dc3545;
+    font-size: 13px;
+}
+
+.badge-primary {
+    color: #fff;
+    background-color: #3490dc;
+    font-size: 13px;
+}
+
+.badge-success {
+    color: #fff;
+    background-color: #38c172;
+    font-size: 13px;
 }
